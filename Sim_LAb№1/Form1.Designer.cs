@@ -74,6 +74,7 @@
             // 
             // chart1
             // 
+            chartArea1.AxisX.Title = "Кол-во n в серии";
             chartArea1.AxisY.Interval = 0.1D;
             chartArea1.AxisY.Maximum = 1D;
             chartArea1.AxisY.Minimum = 0D;
@@ -81,7 +82,7 @@
             this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Location = new System.Drawing.Point(248, 12);
             this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(475, 359);
+            this.chart1.Size = new System.Drawing.Size(720, 264);
             this.chart1.TabIndex = 4;
             this.chart1.Text = "chart1";
             // 
@@ -99,7 +100,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(997, 450);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.label2);
