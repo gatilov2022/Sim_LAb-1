@@ -21,6 +21,7 @@ namespace Sim_LAb_1
 
         private void create_graf(int col_ser,int col_popit)
         {
+            chart1.Series.Clear();
             int expr;
             int orel;
             for (int i = 0; i < col_ser; i++)
@@ -34,7 +35,7 @@ namespace Sim_LAb_1
                 {
                     double m = rand.NextDouble();
                     expr++;
-                    if (m > 0.5)
+                    if (m >= 0.5)
                     {
                         orel++;
                     }
@@ -51,6 +52,7 @@ namespace Sim_LAb_1
             chart1.Series["SredArif"].Color = Color.Red;
             chart1.Series["SredArif"].ChartType = SeriesChartType.Spline;
             chart1.Series["SredArif"].BorderWidth = 2;
+
             chart2.Series[0].Points.Clear();
 
             for (int i = 0; i < col_popit; i++)
@@ -64,15 +66,24 @@ namespace Sim_LAb_1
                 chart1.Series["SredArif"].Points.AddXY(i + 1, sred);
                 chart2.Series[0].Points.AddXY(i + 1, Math.Abs(sred - 0.5));
             }
+            chart2.ChartAreas[0].AxisX.Title = "Номер эксперемента";
+            chart2.ChartAreas[0].AxisY.Title = "Погрешность";
 
         }
 
         private void rez_gtoup(int col_popit)
         {
             double last_rez = chart1.Series["SredArif"].Points[col_popit - 1].YValues[0];
-
-            label4.Text = "Результат:" + last_rez;
-            label5.Text = "Отклонение от теор. знач:" + Math.Abs(Math.Round(last_rez - 0.5, last_rez.ToString().Length));
+            if (last_rez.ToString().Length < 16)
+            {
+                label4.Text = "Результат:" + last_rez;
+                label5.Text = "Отклонение от теор. знач:" + Math.Abs((decimal)Math.Round(last_rez - 0.5, last_rez.ToString().Length));
+            }
+            else
+            {
+                label4.Text = "Результат:" + (decimal)Math.Round(last_rez, last_rez.ToString().Length - 3);
+                label5.Text = "Отклонение от теор. знач:" + Math.Abs((decimal)Math.Round(last_rez - 0.5, last_rez.ToString().Length - 3));
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -84,8 +95,6 @@ namespace Sim_LAb_1
 
             chart1.ChartAreas[0].AxisX.IsLogarithmic = false;
             chart2.ChartAreas[0].AxisX.IsLogarithmic = false;
-
-            chart1.Series.Clear();
 
             create_graf(col_ser, col_popit);
             create_graf_task2(col_ser,col_popit);
