@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Sim_LAb_1
 {
@@ -64,10 +65,12 @@ namespace Sim_LAb_1
             chart1.Series["Accuracy2"].ChartType = SeriesChartType.Line;
             chart1.Series["Accuracy2"].BorderWidth = 3;
             chart2.Series[0].Points.Clear();
-            chart2.Series[2].Points.Clear();
             chart2.Series[1].Points.Clear();
+            chart2.Series[2].Points.Clear();
 
+            Excel.Application excel = new Excel.Application();
 
+            int m = 0;
             double y;
             List<double> NValues = new List<double>();
 
@@ -78,12 +81,14 @@ namespace Sim_LAb_1
             for (int i = 0; i < col_popit; i++)
             {
                 y = 0;
+                m++;
                 NValues.Clear();
                 for (int j = 0; j < col_ser; j++)
                 {
                     y += chart1.Series[j].Points[i].YValues[0];
                     NValues.Add(chart1.Series[j].Points[i].YValues[0]);
                 }
+
                 NValues.Sort();
                 NValues.RemoveRange(NValues.Count - AmountToDel, AmountToDel);
                 NValues.RemoveRange(0, AmountToDel);
@@ -94,13 +99,19 @@ namespace Sim_LAb_1
                 chart2.Series[2].Points.AddXY(i + 1, (NValues[NValues.Count - 1] - NValues[0]) / 2);
 
                 double sred = y / (double)col_ser;
+
+                Object b = excel.WorksheetFunction.NormSInv(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
+                double e = Convert.ToDouble(b.ToString()) * Math.Sqrt(0.25 / m);
+
                 chart1.Series["SredArif"].Points.AddXY(i + 1, sred);
                 chart2.Series[0].Points.AddXY(i + 1, Math.Abs(sred - 0.5));
+                chart2.Series[1].Points.AddXY(i + 1, e);
+                excel.Visible = false;
             }
-            
+
             chart2.ChartAreas[0].AxisX.Title = "Номер эксперемента";
             chart2.ChartAreas[0].AxisY.Title = "Погрешность";
-
+            
         }
 
 
@@ -130,20 +141,22 @@ namespace Sim_LAb_1
 
             if (checkBox1.Checked == true)
             {
+                chart1.ChartAreas[0].AxisX.IsLogarithmic = false;
+                chart2.ChartAreas[0].AxisX.IsLogarithmic = false;
                 chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
                 chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
             }
-            else
-            {
-                chart1.ChartAreas[0].AxisX.IsLogarithmic = false;
-                chart2.ChartAreas[0].AxisX.IsLogarithmic = false;
-            }
+
             create_graf(col_ser, col_popit);
             create_graf_task2(col_ser,col_popit);
             rez_gtoup(col_popit);
 
 
-            
+            if (checkBox1.Checked == true)
+            {
+                chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
+                chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
+            }
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -153,6 +166,7 @@ namespace Sim_LAb_1
                 button1.Enabled = true;
             }
             else button1.Enabled = false;
+            
         }
 
     }
