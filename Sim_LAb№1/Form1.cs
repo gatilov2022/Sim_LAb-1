@@ -79,7 +79,7 @@ namespace Sim_LAb_1
             double Delta = (1 - Convert.ToDouble(textBox3.Text) )/ 2;
 
             int AmountToDel = (int)(Delta * col_ser);
-
+            TestLaplas test = new TestLaplas();
             for (int i = 0; i < col_popit; i++)
             {
                 y = 0;
@@ -101,11 +101,9 @@ namespace Sim_LAb_1
                 chart2.Series[2].Points.AddXY(i + 1, (NValues[NValues.Count - 1] - NValues[0]) / 2);
 
                 double sred = y / (double)col_ser;
-
-                LaplaceResult  = Laplace.Phi(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
+                LaplaceResult  = test.F(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
                 double e = Convert.ToDouble(LaplaceResult.ToString()) * Math.Sqrt(0.25 / m);
 
-                listBox1.Items.Add(y);
 
                 chart1.Series["SredArif"].Points.AddXY(i + 1, sred);
                 chart2.Series[0].Points.AddXY(i + 1, Math.Abs(sred - 0.5));
@@ -134,6 +132,7 @@ namespace Sim_LAb_1
                 label4.Text = "Результат:" + (decimal)Math.Round(last_rez, last_rez.ToString().Length - 3);
                 label5.Text = "Отклонение от теор. знач:" + Math.Abs((decimal)Math.Round(last_rez - 0.5, last_rez.ToString().Length - 3));
             }
+            label4.Text += " ± " + Math.Round(chart2.Series[1].Points[col_popit - 1].YValues[0], 4);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -156,7 +155,6 @@ namespace Sim_LAb_1
                 chart2.ChartAreas[0].AxisX.IsLogarithmic = false;
             }
             else
-
             {
                 chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
                 chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
@@ -166,8 +164,7 @@ namespace Sim_LAb_1
             create_graf(col_ser, col_popit);
             create_graf_task2(col_ser,col_popit);
             rez_gtoup(col_popit);
-            chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
-            chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
+
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
