@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using Excel = Microsoft.Office.Interop.Excel;
+//using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Sim_LAb_1
 {
@@ -68,11 +68,13 @@ namespace Sim_LAb_1
             chart2.Series[1].Points.Clear();
             chart2.Series[2].Points.Clear();
 
-            Excel.Application excel = new Excel.Application();
+            //Excel.Application excel = new Excel.Application();
 
             int m = 0;
             double y;
             List<double> NValues = new List<double>();
+
+            double LaplaceResult;
 
             double Delta = (1 - Convert.ToDouble(textBox3.Text) )/ 2;
 
@@ -100,13 +102,15 @@ namespace Sim_LAb_1
 
                 double sred = y / (double)col_ser;
 
-                Object b = excel.WorksheetFunction.NormSInv(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
-                double e = Convert.ToDouble(b.ToString()) * Math.Sqrt(0.25 / m);
+                LaplaceResult  = Laplace.Phi(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
+                double e = Convert.ToDouble(LaplaceResult.ToString()) * Math.Sqrt(0.25 / m);
+
+                listBox1.Items.Add(y);
 
                 chart1.Series["SredArif"].Points.AddXY(i + 1, sred);
                 chart2.Series[0].Points.AddXY(i + 1, Math.Abs(sred - 0.5));
                 chart2.Series[1].Points.AddXY(i + 1, e);
-                excel.Visible = false;
+                //excel.Visible = false;
             }
 
             chart2.ChartAreas[0].AxisX.Title = "Номер эксперемента";
@@ -136,27 +140,34 @@ namespace Sim_LAb_1
         {
             int col_ser = Convert.ToInt32(textBox2.Text);
             int col_popit = Convert.ToInt32(textBox1.Text);
-            chart1.ChartAreas[0].AxisX.Maximum = col_popit + 1;
-            chart2.ChartAreas[0].AxisX.Maximum = col_popit + 1;
 
-            if (checkBox1.Checked == true)
+            int a = col_popit + 1;
+            int b = 1;
+
+            chart1.ChartAreas[0].AxisX.Maximum = a;
+            chart2.ChartAreas[0].AxisX.Maximum = a;
+            chart1.ChartAreas[0].AxisX.Minimum = b;
+            chart2.ChartAreas[0].AxisX.Minimum = b;
+
+
+            if (checkBox1.Checked != true)
             {
                 chart1.ChartAreas[0].AxisX.IsLogarithmic = false;
                 chart2.ChartAreas[0].AxisX.IsLogarithmic = false;
+            }
+            else
+
+            {
                 chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
                 chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
             }
+            
 
             create_graf(col_ser, col_popit);
             create_graf_task2(col_ser,col_popit);
             rez_gtoup(col_popit);
-
-
-            if (checkBox1.Checked == true)
-            {
-                chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
-                chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
-            }
+            chart1.ChartAreas[0].AxisX.IsLogarithmic = true;
+            chart2.ChartAreas[0].AxisX.IsLogarithmic = true;
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
