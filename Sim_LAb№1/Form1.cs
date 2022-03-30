@@ -70,7 +70,7 @@ namespace Sim_LAb_1
             double Delta = (1 - Convert.ToDouble(textBox3.Text) )/ 2;
 
             int AmountToDel = (int)(Delta * numOfSeries);
-            TestLaplas test = new TestLaplas();
+            TestLaplas laplaceCalc = new TestLaplas();
 
 
             for (int i = 0; i < numOfAttemp; i++)
@@ -95,7 +95,7 @@ namespace Sim_LAb_1
 
                 double average = y / (double)numOfSeries;
 
-                double laplaceResult = test.F(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
+                double laplaceResult = laplaceCalc.F(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
                 double resultValue = Convert.ToDouble(laplaceResult.ToString()) * Math.Sqrt(0.25 / (i + 1 ));
 
                 chart1.Series["averageArefm"].Points.AddXY(i + 1, average);
@@ -110,19 +110,10 @@ namespace Sim_LAb_1
         private void RezGroup(int numOfAttemp)
         {
             
-            double lastResult = chart1.Series["averageArefm"].Points[numOfAttemp - 1].YValues[0];
+            var lastResult = (decimal)Math.Round(chart1.Series["averageArefm"].Points[numOfAttemp - 1].YValues[0], 15);
 
-            if (lastResult.ToString().Length < 16)
-            {
-                label4.Text = "Вероятность:" + lastResult;
-                label5.Text = "Отклонение от теор. знач:" + Math.Abs((decimal)Math.Round(lastResult - 0.5, lastResult.ToString().Length));
-            }
-            else
-            {
-                label4.Text = "Вероятность:" + (decimal)Math.Round(lastResult, lastResult.ToString().Length - 3);
-                label5.Text = "Отклонение от теор. знач:" + Math.Abs((decimal)Math.Round(lastResult - 0.5, lastResult.ToString().Length - 3));
-            }
-            label4.Text += " ± " + Math.Round(chart2.Series[1].Points[numOfAttemp - 1].YValues[0], 4);
+            label4.Text = "Результат:" + lastResult + " ± " + Math.Round(chart2.Series[1].Points[numOfAttemp - 1].YValues[0], 8);
+            label5.Text = "Отклонение:" + Math.Abs(lastResult - (decimal)0.5);
         }
 
         private void Button1Click(object sender, EventArgs e)
@@ -165,5 +156,23 @@ namespace Sim_LAb_1
                 chart2.ChartAreas[0].AxisX.IsLogarithmic = false;
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var laplaceCalc = new TestLaplas();
+
+            var i = 1;
+            double f = laplaceCalc.F(Convert.ToDouble(textBox3.Text) / 2 + 0.5);
+            double y = f * Math.Sqrt(0.25 / 1);
+            while (y >= Convert.ToDouble(textBox4.Text))
+            {
+                i++;
+                y = f * Math.Sqrt(0.25 / i);
+            }
+
+            label7.Text = "Количество опытов: " + i + "\nОтклонение от теор. погрешности " + Math.Round(y, 6);
+
+        }
+        
     }
 }
